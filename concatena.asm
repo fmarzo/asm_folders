@@ -1,86 +1,122 @@
-
-
 .586
 .model flat
 .code
+
 
 _concatena proc
 
 push ebp
 mov ebp, esp
+
 push ebx
-push edi
 push esi
+push edi
 
 
-mov esi, dword ptr [ebp + 20]; esi modalità
-mov eax, dword ptr [ebp + 8]; eax indirizzo s1
-mov ebx, dword ptr [ebp + 12]; ebx indirizzo s2
-mov ecx, dword ptr [ebp + 16]; ecx indirizzo s3
-
+mov eax, dword ptr [ebp + 8]; eax -> s1 addr
+mov ebx, dword ptr [ebp + 12]; ebx -> s2 addr
+mov ecx, dword ptr [ebp + 16]; ecx -> s3 addr
+mov esi, dword ptr [ebp + 20]; esi -> mode
 
 cmp esi, 0
 je mode1
 cmp esi, 1
-je mode2
+je mode2 
 cmp esi, 3
 je mode3
-jmp fine
+jmp fineend
+
 
 mode1:
-
-call insertstring
-
+call unisci
+mov edx, eax
 mov eax, ebx
-call insertstring
-
-jmp fine
-
-
+call unisci
+jmp fineend
 
 mode2:
+mov edx, eax
+mov eax, ebx
+call unisci
+mov eax, edx
+call unisci
+jmp fineend
 
 mode3:
+call countchar
 
 
-fine:
+fineend:
 
-mov byte ptr[ecx], 0
+inc ecx
+mov byte ptr [ecx], 0
 
-pop esi
 pop edi
+pop esi
 pop ebx
 mov esp, ebp
 pop ebp
 ret
 
+
 _concatena endp
 
 
-insertstring proc 
-; eax indirizzo string da inserire
-; ecx indirizzo stringa dove inserire
-push edi
+unisci proc
 
+; eax -> s* addr
+; ecx -> s3 addr
+
+
+push esi 
+push edx
+
+mov dl, 0
+mov esi, 0
 mov edi, 0
 
-iniziociclo1:
-mov dl, byte ptr [eax+ edi]
-cmp dl, 0
-je fineciclo1
+startciclo:
+cmp byte ptr [eax + esi], 0
+je fineciclo
+mov dl, byte ptr [eax + esi]
 mov byte ptr [ecx], dl
+inc esi
 inc ecx
-inc edi
-jmp iniziociclo1
+jmp startciclo
+
+
+fineciclo:
+
+
+pop edx
+pop esi
+
+ret
+unisci endp
+
+
+countchar proc
+
+; eax -> s* addr
+; esi -> n char
+
+mov esi,0
+
+
+startloop1:
+mov bl, byte ptr[eax + esi]
+cmp bl, 0
+je fineciclo1
+inc esi
+jmp startloop1
 
 
 fineciclo1:
 
-pop edi
-
 ret
-insertstring endp
 
+
+countchar endp
 
 
 
