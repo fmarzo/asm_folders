@@ -71,7 +71,7 @@ _farfallinami endp
 
 checkvocale proc
 ; vocale in al
-; in esi se c'è o no
+; in esi se c'Ã¨ o no
 
 mov esi, 0
 
