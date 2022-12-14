@@ -1,0 +1,70 @@
+.586 
+.model flat
+.code 
+
+_prodotto proc
+
+
+; PRODOTTO TRA I VALORI DI VETTORI TALE CHE I != J
+
+push ebp
+mov ebp, esp
+
+push ebx
+push esi
+push edi
+
+
+mov ecx, dword ptr [ebp + 8]
+mov edx, dword ptr [ebp + 12]
+
+
+mov esi, 0
+mov edi, 0
+
+
+continuaInizio:
+mov eax, dword ptr [ecx + edi * 4]
+continua:
+mov ebx, dword ptr [ecx + edi * 4]
+cmp edi, esi
+je prox
+imul ebx
+
+
+
+prox:
+inc edi
+cmp edi, dword ptr [ebp + 16]
+je fineciclo
+jmp continua
+
+
+
+fineciclo:
+cmp esi, dword ptr [ebp + 16]
+je fine
+push edi
+mov edi, dword ptr [ebp + 12]
+mov dword ptr [edi + esi * 4], eax
+pop edi
+inc esi
+mov edi, 0
+jmp continuaInizio
+
+fine:
+
+pop edi
+pop esi
+pop ebx
+
+mov esp, ebp
+pop ebp
+
+ret
+
+
+
+_prodotto endp
+
+End
