@@ -1,0 +1,105 @@
+; CONTA LE PAROLE DELLA STRINGA CHE NON CONTENGONO CARATTERI DIVERSI DA QUELLI ALFANUMERICI
+
+.586
+.model flat
+.code
+
+_contaparolevere proc
+
+push ebp
+mov ebp, esp
+
+push edi
+push esi
+push ebx
+
+mov esi, 0
+mov edi, 0
+mov ebx, 0 ; -> start
+mov edx, 0 ; -> end
+
+inizio:
+mov eax, dword ptr [ebp + 8]
+mov cl, byte ptr [eax + esi]
+cmp cl, 0
+je incrementafinale
+cmp cl, 32
+je incrementa
+jmp nextcycle
+
+
+
+incrementafinale:
+call confronta
+jmp fine
+
+incrementa:
+call confronta
+mov ebx, edx
+
+nextcycle:
+inc esi
+inc edx
+
+jmp inizio
+
+fine:
+
+mov eax, edi 
+
+pop ebx
+pop esi
+pop edi
+
+mov esp, ebp
+pop ebp
+ret
+
+
+_contaparolevere endp
+
+confronta proc
+
+; ebx start index
+; edx end index
+
+cmp ebx, 0
+jne incrementaAddr
+
+inizio2:
+mov cl, byte ptr [eax + ebx]
+cmp ebx, edx 
+je fine2
+cmp cl, 65
+jl notok
+cmp cl, 90
+jg controllaMinuscola
+inc ebx
+jmp inizio2
+
+
+incrementaAddr:
+inc ebx
+jmp inizio2
+
+controllaMinuscola:
+cmp cl, 97
+jl notok
+cmp cl, 122 
+jg notok
+inc ebx
+jmp inizio2
+
+
+notok:
+ret
+
+fine2:
+inc edi
+
+fine3:
+ret
+
+confronta endp
+
+End
